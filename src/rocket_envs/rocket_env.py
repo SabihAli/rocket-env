@@ -742,3 +742,7 @@ class Rocket6DOF(Env):
 
         return pd.DataFrame(self.vtarg_history, columns=["v_x", "v_y", "v_z"])
 
+if __name__ == "__main__":
+    env = Rocket6DOF()
+    for i in range(10):
+        env.step([0,0])
