@@ -1,7 +1,7 @@
 from gym.envs.registration import register
 
-from rocket_env import Rocket6DOF
-from rocket_env_fins import Rocket6DOF_Fins
+from .rocket_env import Rocket6DOF
+from .rocket_env_fins import Rocket6DOF_Fins
 
 # Register the environment
 register(

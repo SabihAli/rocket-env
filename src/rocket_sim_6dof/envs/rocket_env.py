@@ -212,7 +212,7 @@ class Rocket6DOF(Env):
         (
             self.state,
             isterminal,
-        ) = self.SIM.step(self.action, integration_method = "RK45")
+        ) = self.SIM.step(self.action, integration_method="RK45")
 
         state = self.state.astype(np.float32)
 
@@ -742,7 +742,3 @@ class Rocket6DOF(Env):
 
         return pd.DataFrame(self.vtarg_history, columns=["v_x", "v_y", "v_z"])
 
-if __name__ == "__main__":
-    env = Rocket6DOF()
-    for i in range(10):
-        env.step([0,0])
