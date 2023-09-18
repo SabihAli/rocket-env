@@ -2,7 +2,7 @@
 
 This is a Python Gym environment to simulate a 6 degrees of freedom rocket.
 
-![](_images/rocket_trajectory.png)
+![rocket-trajectory](_images/rocket_trajectory.png)
 
 ## Features
 
