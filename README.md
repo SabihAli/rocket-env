@@ -1,6 +1,6 @@
 # rocket_env
 
-A Gymnasium environment simulating a 6DOF rocket![D[D[D[D[D[D[D[D[D[D[D[D[D
+A Gymnasium environment simulating a 6DOF rocket!
 
 ## Installation
 
