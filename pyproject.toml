@@ -1,14 +1,16 @@
-[build-system]
-requires = ["flit_core >=3.2,<4"]
-build-backend = "flit_core.buildapi"
-
-[project]
+[tool.poetry]
 name = "rocket_env"
-authors = [{name = "Davide Iafrate", email = "dvd.iafrate98@gmail.com"}]
+version = "0.1.0"
+description = "A Gymnasium environment simulating a 6DOF rocket![D[D[D[D[D[D[D[D[D[D[D[D[D"
+authors = ["Davide Iafrate"]
+license = "MIT"
 readme = "README.md"
-license = {file = "LICENSE"}
-classifiers = ["License :: OSI Approved :: MIT License"]
-dynamic = ["version", "description"]
 
-[project.urls]
-Home = "https://github.com/Tuxliri/rocket-sim"
+[tool.poetry.dependencies]
+python = "^3.9"
+
+[tool.poetry.dev-dependencies]
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
