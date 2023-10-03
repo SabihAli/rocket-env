@@ -1,13 +1,13 @@
 [tool.poetry]
 name = "rocket_env"
 version = "0.1.0"
-description = "A Gymnasium environment simulating a 6DOF rocket![D[D[D[D[D[D[D[D[D[D[D[D[D"
+description = "A Gymnasium environment simulating a 6DOF rocket!"
 authors = ["Davide Iafrate"]
 license = "MIT"
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.9"
+python = ">=3.9"
 
 [tool.poetry.dev-dependencies]
 
