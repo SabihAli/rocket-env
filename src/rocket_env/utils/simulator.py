@@ -1,6 +1,3 @@
-# In this file the dynamics are simulated using
-# different kind of simulators. A 3DOF simulator,
-# a linearized 3DOF and a 6DOF simulink simulator
 from numpy.typing import ArrayLike
 import numpy as np
 from scipy.spatial.transform.rotation import Rotation
