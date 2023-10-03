@@ -1,13 +1,16 @@
 [tool.poetry]
 name = "rocket_env"
 version = "0.1.0"
-description = "A Gymnasium environment simulating a 6DOF rocket!"
+description = "A Gym environment simulating a 6DOF rocket!"
 authors = ["Davide Iafrate"]
 license = "MIT"
 readme = "README.md"
 
 [tool.poetry.dependencies]
 python = ">=3.9"
+numpy = "1.21.0"
+pyvista = "0.39.0"
+gym = "==0.22.0"
 
 [tool.poetry.dev-dependencies]
 
