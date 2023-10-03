@@ -79,20 +79,20 @@ class Simulator6DOF:
     def state(self):
         """Current system state in global frame
 
-        state[0] : x axis position
-        state[1] : y axis position
-        state[2] : z axis position
-        state[3] : vx axis velocity
-        state[4] : vy axis velocity
-        state[5] : vz axis velocity
-        state[6] : q0 quaternion component (scalar part)
-        state[7] : q1 quaternion component (vector part)
-        state[8] : q2 quaternion component (vector part)
-        state[9] : q3 quaternion component (vector part)
-        state[10]: omega_1 rotational velocity component
-        state[11]: omega_2 rotational velocity component
-        state[12]: omega_3 rotational velocity component
-        state[13] : rocket mass
+        state[0] : x axis position\n
+        state[1] : y axis position\n
+        state[2] : z axis position\n
+        state[3] : vx axis velocity\n
+        state[4] : vy axis velocity\n
+        state[5] : vz axis velocity\n
+        state[6] : q0 quaternion component (scalar part)\n
+        state[7] : q1 quaternion component (vector part)\n
+        state[8] : q2 quaternion component (vector part)\n
+        state[9] : q3 quaternion component (vector part)\n
+        state[10]: omega_1 rotational velocity component\n
+        state[11]: omega_2 rotational velocity component\n
+        state[12]: omega_3 rotational velocity component\n
+        state[13] : rocket mass\n
 
         Returns:
             np.ndarray: State of the sytem
