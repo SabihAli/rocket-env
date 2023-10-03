@@ -13,7 +13,8 @@
 			"extensions": [
 				"ms-python.python",
 				"ms-python.black-formatter",
-				"njpwerner.autodocstring"
+				"njpwerner.autodocstring",
+				"donjayamanne.python-environment-manager"
 			]
 		}
 	}
