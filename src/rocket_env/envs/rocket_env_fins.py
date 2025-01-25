@@ -44,6 +44,8 @@ class Rocket6DOF_Fins(Rocket6DOF):
             trajectory_limits,
             landing_params,
         )
+        # Enable fins in the simulator
+        self.SIM.enable_fins = True
 
         # Append fins action names
         self.action_names.extend(

@@ -8,7 +8,7 @@ from scipy.integrate import solve_ivp
 import logging
 
 class Simulator6DOF:
-    def __init__(self, IC: np.ndarray, dt=0.5) -> None:
+    def __init__(self, IC: np.ndarray, dt=0.5, enable_fins = False) -> None:
         super(Simulator6DOF, self).__init__()
 
         self.timestep = dt
@@ -43,6 +43,7 @@ class Simulator6DOF:
         # action[6] : yaw plane (x-y) control angles
 
         self.times = [0]
+        self.enable_fins = enable_fins
 
         # Define environment properties
         self.g0 = 9.81
@@ -109,6 +110,11 @@ class Simulator6DOF:
 
         terminal_flag=False
         
+        if self.enable_fins:
+            assert len(u) == 7, "Control vector must have 7 elements"
+        else:
+            assert len(u) == 3, "Control vector must have 3 elements"
+
         if integration_method == "RK45":
             def _height_event(t, y):
                 return y[0]
@@ -215,15 +221,17 @@ class Simulator6DOF:
 
         T_body_frame = self._get_thrust_body_frame(control_vector)
         A_body_frame = self._get_aero_force_body(velocity_I, attitude_quaternion, rho)
-        __, total_fins_force = self._get_all_fins_forces(
-            velocity=velocity_I,
-            attitude_quaternion=attitude_quaternion,
-            omega_b=angular_velocity_body,
-            control_vector=control_vector,
-            rho=rho,
-        )
+        if self.enable_fins:
+            _, total_fins_force = self._get_all_fins_forces(
+                velocity=velocity_I,
+                attitude_quaternion=attitude_quaternion,
+                omega_b=angular_velocity_body,
+                control_vector=control_vector,
+                rho=rho,
+            )
+
         inertial_force_vector = R_B_to_I.dot(
-            T_body_frame + A_body_frame + total_fins_force
+            T_body_frame + A_body_frame + total_fins_force if self.enable_fins else T_body_frame + A_body_frame
         )
 
         return inertial_force_vector
@@ -305,13 +313,14 @@ class Simulator6DOF:
 
         T_body_frame = self._get_thrust_body_frame(control_vector)
         A_body_frame = self._get_aero_force_body(velocity, attitude_quaternion, rho)
-        fins_torque = self._compute_fins_torque(
-            velocity=velocity,
-            attitude_quaternion=attitude_quaternion,
-            omega_b=omega,
-            control_vector=control_vector,
-            rho=rho,
-        )
+        if self.enable_fins:
+            fins_torque = self._compute_fins_torque(
+                velocity=velocity,
+                attitude_quaternion=attitude_quaternion,
+                omega_b=omega,
+                control_vector=control_vector,
+                rho=rho,
+            )
 
         thruster_torque = self.__cross_product(self.r_T_B, T_body_frame)
         aerodynamic_torque = self.__cross_product(self.r_cp_B, A_body_frame)
@@ -320,7 +329,7 @@ class Simulator6DOF:
         [BODY TORQUES (N)]
         Thruster torque: {thruster_torque}
         Aerodynamic torque: {aerodynamic_torque}
-        Fins torque: {fins_torque}
+        Fins torque: {fins_torque if self.enable_fins else None}
         """
         logging.debug(msg=message)
 
@@ -329,7 +338,7 @@ class Simulator6DOF:
                 thruster_torque,
                 aerodynamic_torque,
             ),
-            fins_torque,
+            fins_torque if self.enable_fins else [0, 0, 0],
         )
 
     def _get_all_fins_forces(
