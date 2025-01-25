@@ -1,12 +1,9 @@
-setuptools==65.5.0
-pip==21
-wheel==0.38.0
-certifi==2022.12.7
 charset-normalizer==3.1.0
 cloudpickle==2.2.1
 cycler==0.11.0
+Farama-Notifications==0.0.4
 fonttools==4.38.0
-gym==0.21.0
+gymnasium==1.0.0
 idna==3.4
 imageio==2.26.1
 importlib-metadata==6.1.0

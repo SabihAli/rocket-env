@@ -42,38 +42,34 @@ Script to test the functionality of the 6DOF environment:
 ```python
 from rocket_env.envs import Rocket6DOF
 
-# Instantiate the environment
-env = Rocket6DOF()
-
-done = False
-
 # Initialize the environment
-obs = env.reset()
-env.render(mode="human")
+env = Rocket6DOF(render_mode="human")  # or "rgb_array"
+obs, info = env.reset(seed=123)
 
 while True:
-    obs, rew, done, info = env.step(env.action_space.sample())
-    env.render(mode="human")
+    obs, rew, terminated, truncated, info, = env.step(env.action_space.sample())
+    env.render()
     
-    if done:
+    if terminated or truncated:
         env.reset()
-        env.render(mode="human")
+        env.render()
 
 env.close()
 ```
 
 This will show the rendering:
-![environment visualization](_images/image.png)
+![environment visualization](_images/image.png).
 
 ### Minimal Example with Neural Control
 
 ```python
-import gym
+import gymnasium as gym
 from stable_baselines3 import PPO
 from src.rocket_env.envs import Rocket6DOF
 
 # Create the environment
-env = Rocket6DOF()
+# You can set render_mode="human" or "rgb_array" (if supported by your env)
+env = Rocket6DOF(render_mode="human")
 
 # Instantiate the agent
 model = PPO("MlpPolicy", env, verbose=1)
@@ -82,11 +78,20 @@ model = PPO("MlpPolicy", env, verbose=1)
 model.learn(total_timesteps=10000)
 
 # Evaluate the agent
-obs = env.reset()
-for _ in range(1000):
+obs, info = env.reset(seed=123)
+terminated = False
+truncated = False
+
+# Example evaluation loop
+while not (terminated or truncated):
     action, _states = model.predict(obs, deterministic=True)
-    obs, reward, done, info = env.step(action)
+    
+    # With Gymnasium, step returns (obs, reward, terminated, truncated, info)
+    obs, reward, terminated, truncated, info = env.step(action)
+    
+    # Render if you want to see it
     env.render()
-    if done:
-        obs = env.reset()
+    
+    if terminated or truncated:
+        obs, info = env.reset()
 ```
