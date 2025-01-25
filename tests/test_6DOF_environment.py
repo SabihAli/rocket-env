@@ -53,9 +53,6 @@ while landing_attempts <= 10:
     
     if done:
         landing_attempts += 1
-        if info['is_succesful'] is True:
-            succesful_landings +=1
-        print(info["landing_conditions"])
         env.reset()
         env.render(mode="human")
 
