@@ -36,6 +36,11 @@ The environment employs a continuous action space, with the engine allowed to th
     pip install -r requirements.txt
     ```
 
+4. Install the package from the cloned repo:
+    ```bash
+    pip install .
+    ```
+
 ## Minimal Example with Rendering
 Script to test the functionality of the 6DOF environment:
 
