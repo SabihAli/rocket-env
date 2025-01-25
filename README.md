@@ -1,21 +1,21 @@
 # Rocket SIM 6DOF
 
-This is a Python Gym environment to simulate a 6 degrees of freedom rocket.
+This is a Python Gym environment to simulate a 6 degrees of freedom (6DOF) rocket.
 
 <img src="./_images/rocket_trajectory.png" alt="rocket-trajectory" width="80%">
 
 ## Features
 
-* full 6DOF rocket landing environment
-* realistic dynamics equation modeled on a rigid body assumption
-* interactive 3D visualization through PyVista
-* actuators available:
-    1. thruster
-    1. fins
+* Full 6DOF rocket landing environment
+* Realistic dynamics equations modeled on a rigid body assumption
+* Interactive 3D visualization through PyVista
+* Available actuators:
+    - Thruster
+    - Fins
 * Wandb logging wrapper
 
-### Continuous action space
-The environment employes a continuous action space, with the engine allowed to throttle between `maxThrust` and `minThrust`. The thrust was normalized to lie in the range `[-1, +1]` as best practice for convergence of the algorithms suggest. The engine is gimbaled by two angles $\delta_y$ and $\delta_z$ around two hinge points, respectively moving the engine around the z and y axis.
+### Continuous Action Space
+The environment employs a continuous action space, with the engine allowed to throttle between `maxThrust` and `minThrust`. The thrust is normalized to lie in the range `[-1, +1]` as best practice for algorithm convergence suggests. The engine is gimbaled by two angles, $\delta_y$ and $\delta_z$, around two hinge points, respectively moving the engine around the z and y axes.
 
 ## Installation Instructions
 
@@ -25,7 +25,7 @@ The environment employes a continuous action space, with the engine allowed to t
     cd rocket-env
     ```
 
-2. Create a virtual environment and activate it:
+2. Create and activate a virtual environment:
     ```bash
     python3 -m venv venv
     source venv/bin/activate
@@ -36,9 +36,36 @@ The environment employes a continuous action space, with the engine allowed to t
     pip install -r requirements.txt
     ```
 
-## Examples
+## Minimal Example with Rendering
+Script to test the functionality of the 6DOF environment:
 
-### Minimal Example with PPO
+```python
+from rocket_env.envs import Rocket6DOF
+
+# Instantiate the environment
+env = Rocket6DOF()
+
+done = False
+
+# Initialize the environment
+obs = env.reset()
+env.render(mode="human")
+
+while True:
+    obs, rew, done, info = env.step(env.action_space.sample())
+    env.render(mode="human")
+    
+    if done:
+        env.reset()
+        env.render(mode="human")
+
+env.close()
+```
+
+This will show the rendering:
+![environment visualization](_images/image.png)
+
+### Minimal Example with Neural Control
 
 ```python
 import gym
@@ -59,7 +86,7 @@ obs = env.reset()
 for _ in range(1000):
     action, _states = model.predict(obs, deterministic=True)
     obs, reward, done, info = env.step(action)
-    env.render(mode="human")
+    env.render()
     if done:
         obs = env.reset()
 ```
