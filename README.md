@@ -31,12 +31,7 @@ The environment employs a continuous action space, with the engine allowed to th
     source venv/bin/activate
     ```
 
-3. Install the required dependencies:
-    ```bash
-    pip install -r requirements.txt
-    ```
-
-4. Install the package from the cloned repo:
+3. Install the package from the cloned repo:
     ```bash
     pip install .
     ```

@@ -4,11 +4,20 @@ build-backend = "flit_core.buildapi"
 
 [project]
 name = "rocket_env"
-authors = [{name = "Davide Iafrate", email = "dvd.iafrate98@gmail.com"}]
+authors = [{ name = "Davide Iafrate", email = "dvd.iafrate98@gmail.com" }]
 readme = "README.md"
-license = {file = "LICENSE"}
+license = { file = "LICENSE" }
 classifiers = ["License :: OSI Approved :: MIT License"]
 dynamic = ["version", "description"]
+dependencies = [
+    "numpy",
+    "gymnasium",
+    "matplotlib",
+    "scipy",
+    "pandas",
+    "pyvista",
+    "wandb", # TODO: make this extra using the pip install rocket-env[wandb] syntax
+]
 
 [project.urls]
 Home = "https://github.com/Tuxliri/rocket-sim"
