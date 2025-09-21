@@ -11,8 +11,8 @@ class Rocket6DOF_Fins(Rocket6DOF):
     def __init__(
         self,
         render_mode=None,
-        IC=[500, 100, 100, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 50000],
-        ICRange=[50, 10, 10, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1000],
+        IC=[600, 100, 100, -100, 0, 0, 1, 0, 0, 0, 0, 0, 0, 50000],
+        ICRange=[100, 50, 50, 20, 5, 5, 0.4, 0.4, 0.4, 0.4, 0.2, 0.2, 0.2, 2000],
         timestep=0.1,
         reward_shaping_type="acceleration",
         reward_coeff={

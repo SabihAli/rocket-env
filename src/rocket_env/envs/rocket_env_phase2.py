@@ -1,5 +1,5 @@
 import numpy as np
-import pyvista as pv
+# import pyvista as pv
 import gymnasium as gym
 from gymnasium import spaces
 from numpy.typing import ArrayLike
@@ -9,7 +9,7 @@ from scipy.spatial.transform.rotation import Rotation as R
 from ..utils.simulator import Simulator6DOF
 
 
-class Rocket6DOF(gym.Env):
+class Rocket6DOF_Phase2(gym.Env):
     """
     Rocket environment with 6DOF dynamics.
     """
@@ -22,8 +22,8 @@ class Rocket6DOF(gym.Env):
     def __init__(
         self,
         render_mode=None,
-        IC=[500, 100, 100, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 50e3],
-        ICRange=[50, 10, 10, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1e3],
+        IC=[1500, 300, 300, 150, 0, 0, 0, 0, 0, 1, 0, 0, 0, 5e4],
+        ICRange=[200, 100, 100, 50, 50, 50, -0.0474, 0.1768, 0.3062, 0.9340, 0.1, 0.1, 0.1, 1e3],
         timestep=0.1,
         reward_shaping_type="acceleration",
         reward_coeff={
@@ -246,46 +246,46 @@ class Rocket6DOF(gym.Env):
 
         return self._get_obs(), reward, terminated, truncated, info
 
-    def render(self):
-        """
-        Render function for Gymnasium environment.
-        Uses self.render_mode to decide how to render:
-          - 'human' displays on-screen
-          - 'rgb_array' returns an image (numpy array)
-        If render_mode is None, do nothing.
-        """
-        if self.render_mode is None:
-            return
+    # def render(self):
+    #     """
+    #     Render function for Gymnasium environment.
+    #     Uses self.render_mode to decide how to render:
+    #       - 'human' displays on-screen
+    #       - 'rgb_array' returns an image (numpy array)
+    #     If render_mode is None, do nothing.
+    #     """
+    #     if self.render_mode is None:
+    #         return
 
-        if self.plotter is None:
-            # Setup plotter if it's not already
-            kwargs = {}
-            if self.render_mode == "rgb_array":
-                kwargs["off_screen"] = True
+    #     if self.plotter is None:
+    #         # Setup plotter if it's not already
+    #         kwargs = {}
+    #         if self.render_mode == "rgb_array":
+    #             kwargs["off_screen"] = True
 
-            self.plotter = pv.Plotter(**kwargs)
-            self.plotter.show_axes()
-            self._add_meshes_to_plotter(resetting=True)
-            # Set camera
-            self.plotter.camera_position = [
-                (2.0e03, 1.0e01, -5.0e03),
-                (1.0e03, -1.0e02, 4.5e02),
-                (1, 0, 0),
-            ]
-            self.plotter.show(auto_close=False, interactive=False)
+    #         self.plotter = pv.Plotter(**kwargs)
+    #         self.plotter.show_axes()
+    #         self._add_meshes_to_plotter(resetting=True)
+    #         # Set camera
+    #         self.plotter.camera_position = [
+    #             (2.0e03, 1.0e01, -5.0e03),
+    #             (1.0e03, -1.0e02, 4.5e02),
+    #             (1, 0, 0),
+    #         ]
+    #         self.plotter.show(auto_close=False, interactive=False)
 
-        # Remove old rocket and thrust vector
-        self.plotter.remove_actor(["thrust_vector", "rocket_body"], render=False)
-        self._add_meshes_to_plotter()
+    #     # Remove old rocket and thrust vector
+    #     self.plotter.remove_actor(["thrust_vector", "rocket_body"], render=False)
+    #     self._add_meshes_to_plotter()
 
-        self.plotter.update()
+    #     self.plotter.update()
 
-        # If rgb_array, return the current rendered frame
-        if self.render_mode == "rgb_array":
-            return self.plotter.image
+    #     # If rgb_array, return the current rendered frame
+    #     if self.render_mode == "rgb_array":
+    #         return self.plotter.image
 
-        # If "human", PyVista tries to update the existing window;
-        # there's no separate return.
+    #     # If "human", PyVista tries to update the existing window;
+    #     # there's no separate return.
 
     def close(self) -> None:
         """
@@ -448,36 +448,36 @@ class Rocket6DOF(gym.Env):
         }
         return landing_conditions
 
-    def _add_meshes_to_plotter(self, resetting: bool = False):
-        current_loc = self.state[0:3]
+    # def _add_meshes_to_plotter(self, resetting: bool = False):
+    #     current_loc = self.state[0:3]
 
-        self.rocket_body_mesh = pv.Cylinder(
-            center=current_loc,
-            direction=self.rotation_obj.apply([1, 0, 0]),
-            radius=3.66 / 2,
-            height=50,
-        )
+    #     self.rocket_body_mesh = pv.Cylinder(
+    #         center=current_loc,
+    #         direction=self.rotation_obj.apply([1, 0, 0]),
+    #         radius=3.66 / 2,
+    #         height=50,
+    #     )
 
-        self.landing_pad_mesh = pv.Circle(radius=self.target_r)
-        self.landing_pad_mesh.rotate_y(angle=90, inplace=True)
+    #     self.landing_pad_mesh = pv.Circle(radius=self.target_r)
+    #     self.landing_pad_mesh.rotate_y(angle=90, inplace=True)
 
-        thrust_vector = self.SIM.get_thrust_vector_inertial()
+    #     thrust_vector = self.SIM.get_thrust_vector_inertial()
 
-        # Add rocket body
-        self.plotter.add_mesh(
-            self.rocket_body_mesh,
-            show_scalar_bar=False,
-            color="#c8f7c5",
-            name="rocket_body",
-        )
+    #     # Add rocket body
+    #     self.plotter.add_mesh(
+    #         self.rocket_body_mesh,
+    #         show_scalar_bar=False,
+    #         color="#c8f7c5",
+    #         name="rocket_body",
+    #     )
 
-        # Landing pad coloring for success
-        if all(self._check_landing(self.state).values()):
-            self.plotter.add_mesh(
-                self.landing_pad_mesh, color="#00ff00", name="landing_pad"
-            )
-        else:
-            self.plotter.add_mesh(self.landing_pad_mesh, color="red", name="landing_pad")
+    #     # Landing pad coloring for success
+    #     if all(self._check_landing(self.state).values()):
+    #         self.plotter.add_mesh(
+    #             self.landing_pad_mesh, color="#00ff00", name="landing_pad"
+    #         )
+    #     else:
+    #         self.plotter.add_mesh(self.landing_pad_mesh, color="red", name="landing_pad")
 
     def _scipy_quat_convention(self, leading_scalar_quaternion: ArrayLike):
         """
@@ -513,67 +513,67 @@ class Rocket6DOF(gym.Env):
     # -------------------------------------------------------------------------
     # Extra utility methods for trajectory logging / plotting
     # -------------------------------------------------------------------------
-    def get_state(self):
-        return self.state
+    # def get_state(self):
+    #     return self.state
 
-    def get_trajectory_plotly(self):
-        trajectory_dataframe = self.states_to_dataframe()
-        return self._trajectory_plot_from_df(trajectory_dataframe)
+    # def get_trajectory_plotly(self):
+    #     trajectory_dataframe = self.states_to_dataframe()
+    #     return self._trajectory_plot_from_df(trajectory_dataframe)
 
-    def get_attitude_trajectory(self):
-        trajectory_dataframe = self.states_to_dataframe()
-        return self._attitude_traj_from_df(trajectory_dataframe)
+    # def get_attitude_trajectory(self):
+    #     trajectory_dataframe = self.states_to_dataframe()
+    #     return self._attitude_traj_from_df(trajectory_dataframe)
 
-    def _attitude_traj_from_df(self, trajectory_df: DataFrame):
-        import plotly.express as px
-        fig = px.line(trajectory_df[["q0", "q1", "q2", "q3"]])
-        return fig
+    # def _attitude_traj_from_df(self, trajectory_df: DataFrame):
+    #     import plotly.express as px
+    #     fig = px.line(trajectory_df[["q0", "q1", "q2", "q3"]])
+    #     return fig
 
-    def _trajectory_plot_from_df(self, trajectory_df: DataFrame):
-        import plotly.express as px
-        fig = px.line_3d(trajectory_df, x="x", y="y", z="z")
-        # Additional plotting logic omitted for brevity
-        return fig
+    # def _trajectory_plot_from_df(self, trajectory_df: DataFrame):
+    #     import plotly.express as px
+    #     fig = px.line_3d(trajectory_df, x="x", y="y", z="z")
+    #     # Additional plotting logic omitted for brevity
+    #     return fig
 
-    def get_atarg_plotly(self):
-        trajectory_dataframe = self.states_to_dataframe()
-        return self._atarg_figure(trajectory_dataframe)
+    # def get_atarg_plotly(self):
+    #     trajectory_dataframe = self.states_to_dataframe()
+    #     return self._atarg_figure(trajectory_dataframe)
 
-    def _atarg_figure(self, trajectory_df: DataFrame):
-        import plotly.express as px
-        atarg_df = self.atarg_to_dataframe()
-        fig = px.line_3d(trajectory_df, x="x", y="y", z="z")
-        # Additional plotting logic omitted for brevity
-        return fig
+    # def _atarg_figure(self, trajectory_df: DataFrame):
+    #     import plotly.express as px
+    #     atarg_df = self.atarg_to_dataframe()
+    #     fig = px.line_3d(trajectory_df, x="x", y="y", z="z")
+    #     # Additional plotting logic omitted for brevity
+    #     return fig
 
-    def get_vtarg_trajectory(self):
-        trajectory_dataframe = self.states_to_dataframe()
-        return self._vtarg_plot_figure(trajectory_dataframe)
+    # def get_vtarg_trajectory(self):
+    #     trajectory_dataframe = self.states_to_dataframe()
+    #     return self._vtarg_plot_figure(trajectory_dataframe)
 
-    def _vtarg_plot_figure(self, trajectory_df: DataFrame):
-        import plotly.express as px
-        vtarg_df = self.vtarg_to_dataframe()
-        fig = px.line_3d(trajectory_df, x="x", y="y", z="z")
-        # Additional plotting logic omitted for brevity
-        return fig
+    # def _vtarg_plot_figure(self, trajectory_df: DataFrame):
+    #     import plotly.express as px
+    #     vtarg_df = self.vtarg_to_dataframe()
+    #     fig = px.line_3d(trajectory_df, x="x", y="y", z="z")
+    #     # Additional plotting logic omitted for brevity
+    #     return fig
 
-    def states_to_dataframe(self):
-        import pandas as pd
-        return pd.DataFrame(self.SIM.states, columns=self.state_names)
+    # def states_to_dataframe(self):
+    #     import pandas as pd
+    #     return pd.DataFrame(self.SIM.states, columns=self.state_names)
 
-    def actions_to_dataframe(self):
-        import pandas as pd
-        return pd.DataFrame(self.SIM.actions, columns=self.action_names)
+    # def actions_to_dataframe(self):
+    #     import pandas as pd
+    #     return pd.DataFrame(self.SIM.actions, columns=self.action_names)
 
-    def atarg_to_dataframe(self):
-        import pandas as pd
-        return pd.DataFrame(self.atarg_history, columns=["ax", "ay", "az"])
+    # def atarg_to_dataframe(self):
+    #     import pandas as pd
+    #     return pd.DataFrame(self.atarg_history, columns=["ax", "ay", "az"])
 
-    def vtarg_to_dataframe(self):
-        import pandas as pd
-        return pd.DataFrame(self.vtarg_history, columns=["v_x", "v_y", "v_z"])
+    # def vtarg_to_dataframe(self):
+    #     import pandas as pd
+    #     return pd.DataFrame(self.vtarg_history, columns=["v_x", "v_y", "v_z"])
 
-    def used_mass(self):
-        initial_mass = self.SIM.states[0][-1]
-        final_mass = self.SIM.states[-1][-1]
-        return initial_mass - final_mass
+    # def used_mass(self):
+    #     initial_mass = self.SIM.states[0][-1]
+    #     final_mass = self.SIM.states[-1][-1]
+    #     return initial_mass - final_mass
